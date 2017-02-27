@@ -1,4 +1,5 @@
-﻿var player1buttons;
+﻿
+var player1buttons;
 var player2buttons;
 var hintbuttons;
 var animationbuttons;
@@ -58,7 +59,8 @@ function generateMainMenu() {
     textAlign(LEFT, CENTER);
     textStyle(ITALIC);
     text('Check out Cary', height / 40, height * 24 / 25);
-    line()
+    textAlign(RIGHT, CENTER);
+    text('v1.1', width / 3 - height / 40, height * 24 / 25);
 
     fill(60);
     rect(width / 3, height * 29 / 40, width * 2 / 3, height * 11 / 40);
@@ -77,6 +79,8 @@ function generateMainMenu() {
     boardSizePicker.show();
     player1color.show();
     player2color.show();
+    zoomIn.show();
+    zoomOut.show();
 }
 
 function generateLogo(alphaValue) {
@@ -132,10 +136,10 @@ radioButton.prototype.show = function() {
     fill(255);
     text(this.btext, this.posX + height / 40, this.posY);
 
-    if (this.checked == true && this.currentFrame < radioButtonFrames) {
+    if (this.checked && this.currentFrame < radioButtonFrames) {
         this.currentFrame++;
     }
-    if (this.checked == false && this.currentFrame > 0) {
+    if (!this.checked && this.currentFrame > 0) {
         this.currentFrame--;
     }
 }
@@ -149,12 +153,12 @@ radioButton.prototype.clicked = function(x, y) {
     }
 }
 
-function radioButtonSet(btnNames, btnPosX, btnPosY) {
+function radioButtonSet(btnNames, btnPosX, btnPosY, defaultval) {
     this.btnNames = btnNames;
     this.btnPosX = btnPosX;
     this.btnPosY = btnPosY;
     this.buttons = [];
-    this.currentOption = 0;
+    this.currentOption = defaultval;
 
     for (var i = 0; i < this.btnNames.length; i++) {
         this.buttons.push(new radioButton(btnNames[i], btnPosX[i], btnPosY[i]));
@@ -176,7 +180,7 @@ radioButtonSet.prototype.btnClick = function() {
         if (this.buttons[i].clicked(mouseX, mouseY)) {
             buttonpressed = i;
             buttonpressed;
-            if (this.buttons[i].checked == false) {
+            if (!this.buttons[i].checked) {
                 this.buttons[i].checked = true;
                 this.buttons[i].currentFrame++;
             }
@@ -186,7 +190,7 @@ radioButtonSet.prototype.btnClick = function() {
     if (buttonpressed != -1) {
         for (var i = 0; i < this.buttons.length; i++) {
             if (buttonpressed != i) {
-                if (this.buttons[i].checked == true) {
+                if (this.buttons[i].checked) {
                     this.buttons[i].checked = false;
                     this.buttons[i].currentFrame--;
                 }
@@ -213,7 +217,7 @@ gameButton.prototype.showBtn = function() {
     textStyle(this.btnStyle);
     textAlign(CENTER, CENTER);
 
-    if (this.pressed == false) {
+    if (!this.pressed) {
         fill(0, 110, 100);
         rect(this.btnPosX, this.btnPosY + height / 150, this.sizeX, this.sizeY, 15);
         fill(0, 150, 140);
@@ -238,9 +242,9 @@ gameButton.prototype.onButton = function(x, y) {
     }
 }
 
-function Picker(values, defualt, posX, posY, sizeX, sizeY) {
+function Picker(values, defaultval, posX, posY, sizeX, sizeY) {
     this.values = values;
-    this.currentValue = defualt;
+    this.currentValue = defaultval;
     this.posX = posX;
     this.posY = posY;
     this.sizeX = sizeX;
@@ -255,14 +259,14 @@ Picker.prototype.show = function() {
     fill(130);
     rect(this.posX, this.posY, this.sizeX, this.sizeY);
 
-    if (this.up == false) {
+    if (!this.up) {
         fill(100);
     } else {
         fill(70);
     }
     rect(this.posX + this.sizeX - height / 30, this.posY, height / 30, this.sizeY / 2);
 
-    if (this.down == false) {
+    if (!this.down) {
         fill(100);
     } else {
         fill(70);
@@ -277,14 +281,14 @@ Picker.prototype.show = function() {
     textAlign(CENTER, CENTER);
     textSize(12 * boardDimension / 720);
 
-    if (this.up == false) {
+    if (!this.up) {
         fill(255);
     } else {
         fill(200);
     }
     text('▲', this.posX + this.sizeX - height / 60, this.posY + this.sizeY / 4);
 
-    if (this.down == false) {
+    if (!this.down) {
         fill(255);
     } else {
         fill(200);
@@ -303,12 +307,12 @@ Picker.prototype.onPress = function(x, y) {
 
 Picker.prototype.onRelease = function(x, y) {
     if (x >= this.posX + this.sizeX - height / 30 && y >= this.posY && x <= this.posX + this.sizeX && y < this.posY + this.sizeY / 2) {
-        if (this.up == true) {
+        if (this.up) {
             this.valueUp();
         }
     }
     if (x >= this.posX + this.sizeX - height / 30 && y > this.posY + this.sizeY / 2 && x <= this.posX + this.sizeX && y <= this.posY + this.sizeY) {
-        if (this.down == true) {
+        if (this.down) {
             this.valueDown();
         }
     }
@@ -348,11 +352,49 @@ function nowLoading() {
         generateLogo(map(logoAlpha, 0, 15, 0, 255));
         pop();
         loadScreen--;
-    } else if (loading == true) {
+    } else if (loading) {
         loading = false;
     }
 
     if (logoAlpha < 15) {
         logoAlpha++;
+    }
+}
+
+function Zoom(posX, posY, btnText) {
+    this.posX = posX;
+    this.posY = posY;
+    this.btnText = btnText;
+    this.pressed = false;
+
+    this.show = function() {
+        noFill();
+        strokeWeight(3);
+        ellipseMode(CENTER);
+        textAlign(CENTER, CENTER);
+        textSize(25 * boardDimension / 720);
+        textStyle(BOLD);
+        if (!this.pressed) {
+            stroke(110);
+            ellipse(this.posX, this.posY, height / 25, height / 25);
+            fill(110);
+        } else {
+            stroke(70);
+            ellipse(this.posX, this.posY, height / 25, height / 25);
+            fill(70);
+        }
+        ellipseMode(CORNER);
+        strokeWeight(0);
+        noStroke();
+        text(this.btnText, this.posX, this.posY);
+    }
+
+    this.onButton = function(x, y) {
+        var distance = dist(x, y, this.posX, this.posY);
+        if (distance <= height / 50) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

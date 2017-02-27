@@ -55,7 +55,7 @@ function AItransition(cell1, cell2, cell3) {
 
         fill(255);
 
-        if (this.waiting == false) {
+        if (!this.waiting) {
 
             this.aiframe++;
 
@@ -67,7 +67,7 @@ function AItransition(cell1, cell2, cell3) {
         } else if (this.cell1state == false) {
 
             ellipseMode(CENTER);
-            ellipse(this.currentX, this.currentY, cellSize / 4, cellSize / 4);
+            ellipse(this.currentX, this.currentY, cellSize / 3, cellSize / 3);
             ellipseMode(CORNER);
 
             this.currentX = this.xi + (cells[cell1].posX + cellSize / 2 - this.xi) * (1 + sin(-PI / 2 + PI * this.aiframe / aiTransitionFrames)) / 2;
@@ -86,7 +86,7 @@ function AItransition(cell1, cell2, cell3) {
         } else if (this.cell2state == false) {
 
             ellipseMode(CENTER);
-            ellipse(this.currentX, this.currentY, cellSize / 4, cellSize / 4);
+            ellipse(this.currentX, this.currentY, cellSize / 3, cellSize / 3);
             ellipseMode(CORNER);
 
             this.currentX = this.xi + (cells[cell2].posX + cellSize / 2 - this.xi) * (1 + sin(-PI / 2 + PI * this.aiframe / aiTransitionFrames)) / 2;
@@ -105,7 +105,7 @@ function AItransition(cell1, cell2, cell3) {
         } else if (this.cell3state == false) {
 
             ellipseMode(CENTER);
-            ellipse(this.currentX, this.currentY, cellSize / 4, cellSize / 4);
+            ellipse(this.currentX, this.currentY, cellSize / 3, cellSize / 3);
             ellipseMode(CORNER);
 
             this.currentX = this.xi + (cells[cell3].posX + cellSize / 2 - this.xi) * (1 + sin(-PI / 2 + PI * this.aiframe / aiTransitionFrames)) / 2;
@@ -124,7 +124,7 @@ function AItransition(cell1, cell2, cell3) {
         } else if (this.finishstate == false) {
 
             ellipseMode(CENTER);
-            ellipse(this.currentX, this.currentY, cellSize / 4, cellSize / 4);
+            ellipse(this.currentX, this.currentY, cellSize / 3, cellSize / 3);
             ellipseMode(CORNER);
 
             this.currentX = this.xi + (boardDimension - this.xi) * (1 + sin(-PI / 2 + PI * this.aiframe / aiTransitionFrames)) / 2;
@@ -293,7 +293,7 @@ function okayAI(AIteam) {
         }
     }
 
-    if (useVentricles == false) {
+    if (!useVentricles) {
         bestVentricle1 = -1;
         bestVentricle2 = -1;
     }
@@ -431,7 +431,7 @@ function smartAI(AIteam) {
         }
     }
 
-    if (useVentricles == false) {
+    if (!useVentricles) {
         bestVentricle1 = -1;
         bestVentricle2 = -1;
     }
@@ -628,7 +628,7 @@ function smartAI(AIteam) {
 //         }
 //     }
 //
-//     if (useVentricles == false) {
+//     if (!useVentricles) {
 //         bestVentricle1 = -1;
 //         bestVentricle2 = -1;
 //     }

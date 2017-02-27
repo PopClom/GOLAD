@@ -50,7 +50,7 @@ Cell.prototype.show = function() {
         ellipse(this.posX, this.posY, cellSize, cellSize);
     }
 
-    if (borning == true && this.numX == editingX && this.numY == editingY) {
+    if (borning && this.numX == editingX && this.numY == editingY) {
 
         if (showVentricle1) {
             fill(redc[states[player]], greenc[states[player]], bluec[states[player]])
@@ -78,7 +78,7 @@ Cell.prototype.show = function() {
 
     }
 
-    if (hint == true || (hint == false && this.transitionstate != hintsize)) {
+    if (hint || (!hint && this.transitionstate != hintsize)) {
         fill(redc[states[this.nextstate]], greenc[states[this.nextstate]], bluec[states[this.nextstate]]);
         var newsize = this.transitionstate * cellSize / transitionframes;
         if (cellShape == 'square') {
@@ -92,7 +92,7 @@ Cell.prototype.show = function() {
         }
     }
 
-    if (hint == true && this.transitionstate >= hintsize) {
+    if (hint && this.transitionstate >= hintsize) {
         fill(redc[states[this.nextnextstate]], greenc[states[this.nextnextstate]], bluec[states[this.nextnextstate]]);
         var newsize = ((this.transitionstate - hintsize) * cellSize / (transitionframes - hintsize)) / (transitionframes / hintsize);
 
@@ -125,7 +125,7 @@ Cell.prototype.changeState = function() {
 
 Cell.prototype.addremove = function() {
     if (editingX == -1 && editingY == -1) {
-        if (this.locked == false) {
+        if (!this.locked) {
             if (this.state == 'DEAD') {
                 borning = true;
                 prevstate = this.state;
@@ -139,7 +139,7 @@ Cell.prototype.addremove = function() {
             cleanRecord();
         }
     } else if (this.numX == editingX && this.numY == editingY) {
-        if (borning == true) {
+        if (borning) {
             if (shapeTransitions.length == 0) {
                 if (ventricle1 != -1) {
                     shapeTransitions.push(new ShapeTransition(this.posX + edgeThickness,
@@ -180,7 +180,7 @@ Cell.prototype.addremove = function() {
             cleanRecord();
         }
     } else {
-        if (borning == true) {
+        if (borning) {
             if (this.state == player) {
                 if (ventricle1 == -1) {
                     this.state = 'DEAD';
@@ -289,7 +289,7 @@ Cell.prototype.checkneighbors = function(defaultstate) {
 }
 
 Cell.prototype.transition = function() {
-    if (animations == false) {
+    if (!animations) {
         this.transitionstate = transitionframes;
     }
 
@@ -303,7 +303,7 @@ Cell.prototype.transition = function() {
 }
 
 Cell.prototype.clicked = function(x, y) {
-    if (x >= this.posX && x <= this.posX + cellSize && y >= this.posY && y <= this.posY + cellSize && this.transitioning == false) {
+    if (x >= this.posX && x <= this.posX + cellSize && y >= this.posY && y <= this.posY + cellSize && !this.transitioning) {
         return true;
     } else {
         return false;

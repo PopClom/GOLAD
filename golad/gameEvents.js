@@ -107,7 +107,7 @@ function step() {
         player = 'DEAD';
     }
 
-    if (onGame == true && gameFinished == false) {
+    if (onGame && !gameFinished) {
         if (redcells == 0 && bluecells != 0) {
             alert('Player 2 wins!');
             gameFinished = true;
@@ -161,10 +161,10 @@ ShapeTransition.prototype.nextframe = function() {
     this.currentframe++;
 
     if (this.currentframe == shapetransitionframes) {
-        if (this.ventr == 1 && borning == true) {
+        if (this.ventr == 1 && borning) {
             showVentricle1 = true;
         }
-        if (this.ventr == 2 && borning == true) {
+        if (this.ventr == 2 && borning) {
             showVentricle2 = true;
         }
         if (this.cellNum != -1) {
@@ -298,12 +298,12 @@ function loadState(move) {
 }
 
 function finish(counttransitions) {
-    if (onGame == true) {
+    if (onGame) {
         if (shapeTransitions.length == 0) {
             if (editingX != -1 && editingY != -1) {
-                if (borning == true && ventricle1 != -1 && ventricle2 != -1) {
+                if (borning && ventricle1 != -1 && ventricle2 != -1) {
                     step();
-                } else if (borning == false) {
+                } else if (!borning) {
                     step();
                 }
             } else {
@@ -336,7 +336,7 @@ function finish(counttransitions) {
 
 function undo() {
     if (currentMove > 1) {
-        if (onGame == true) {
+        if (onGame) {
             if (AorB() == 'B') {
                 loadState(currentMove);
             } else {
@@ -357,7 +357,7 @@ function undo() {
 
 function redo() {
     if (currentMove < totalMoves) {
-        if (onGame == true) {
+        if (onGame) {
             if (AorB() == 'A') {
                 loadState(currentMove + 1);
             } else {
@@ -511,7 +511,7 @@ function sandbox() {
 function resume() {
     configureGame();
 
-    if (onGame == true) {
+    if (onGame) {
         if (player1buttons.option == 'Human') {
             redAI = '';
         } else if (player1buttons.option == 'Dumb AI') {
@@ -594,4 +594,51 @@ function changeRules() {
             }
         }
     }
+}
+
+function resize(type) {
+    cellSize = boardDimension / (boardSize * 1.1 + 0.1);
+    edgeThickness = cellSize * 0.1;
+
+    for (var i = 0; i < cells.length; i++) {
+        cells[i].posX = cells[i].numX * (cellSize + edgeThickness) + edgeThickness;
+        cells[i].posY = cells[i].numY * (cellSize + edgeThickness) + edgeThickness;
+    }
+
+    if (type == 'in') {
+        var scaling = boardDimension / (boardDimension - zoomStep);
+    } else if (type == 'out') {
+        var scaling = boardDimension / (boardDimension + zoomStep);
+    }
+
+    for (var i = 0; i < shapeTransitions.length; i++) {
+      shapeTransitions[i].xi *= scaling;
+      shapeTransitions[i].yi *= scaling;
+      shapeTransitions[i].wi *= scaling;
+      shapeTransitions[i].hi *= scaling;
+      shapeTransitions[i].xf *= scaling;
+      shapeTransitions[i].yf *= scaling;
+      shapeTransitions[i].wf *= scaling;
+      shapeTransitions[i].hf *= scaling;
+      shapeTransitions[i].xinc *= scaling;
+      shapeTransitions[i].yinc *= scaling;
+      shapeTransitions[i].winc *= scaling;
+      shapeTransitions[i].hinc *= scaling;
+    }
+
+    if (AIanimation != null) {
+      AIanimation.xi *= scaling;
+      AIanimation.yi *= scaling;
+    }
+
+    defaultPlayer1 = player1buttons.currentOption;
+    defaultPlayer2 = player2buttons.currentOption;
+    defaultHint = hintbuttons.currentOption;
+    defaultAnimation = animationbuttons.currentOption;
+    defaultCellShape = cellshapebuttons.currentOption;
+    defaultBoardSize = boardSizePicker.currentValue;
+    defaultPlayer1color = player1color.currentValue;
+    defaultPlayer2color = player2color.currentValue;
+
+    setup();
 }

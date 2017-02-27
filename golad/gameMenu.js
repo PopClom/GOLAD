@@ -21,7 +21,7 @@ function generateMenu() {
     undoButton.showBtn();
     redoButton.showBtn();
     menuButton.showBtn();
-    if (onGame == false) {
+    if (!onGame) {
         emptyButton.showBtn();
     }
 }
@@ -40,7 +40,7 @@ function showPlayerSection() {
 
     fill(redc[states['RED']], greenc[states['RED']], bluec[states['RED']]);
     rect(height, height / 10, width - height, height / 5);
-    if (player == 'RED' || onGame == false) {
+    if (player == 'RED' || !onGame) {
         fill(bright);
     } else {
         fill(0);
@@ -49,7 +49,7 @@ function showPlayerSection() {
 
     fill(redc[states['BLUE']], greenc[states['BLUE']], bluec[states['BLUE']]);
     rect(height, height * 3 / 10 + height / 200, width - height, height / 5);
-    if (player == 'BLUE' || onGame == false) {
+    if (player == 'BLUE' || !onGame) {
         fill(bright);
     } else {
         fill(0);
@@ -61,7 +61,7 @@ function showPlayerDetails() {
     textStyle(NORMAL);
     textSize(30 * boardDimension / 720);
 
-    if (player == 'RED' || onGame == false) {
+    if (player == 'RED' || !onGame) {
         fill(bright);
     } else {
         fill(0);
@@ -73,7 +73,7 @@ function showPlayerDetails() {
     }
     text(player1buttons.option, height + (width - height) / 2, height / 5 - height / 17);
 
-    if (player == 'BLUE' || onGame == false) {
+    if (player == 'BLUE' || !onGame) {
         fill(bright);
     } else {
         fill(0);
@@ -90,7 +90,7 @@ function showMoves() {
     textStyle(NORMAL);
     textSize(30 * boardDimension / 720);
 
-    if (onGame == true) {
+    if (onGame) {
         var AorBmove = AorB();
         if (currentMove == totalMoves) {
             var showMove = ((currentMove + 1) / 2) + AorBmove + '/' + ((totalMoves + 1) / 2) + AorBmove;
